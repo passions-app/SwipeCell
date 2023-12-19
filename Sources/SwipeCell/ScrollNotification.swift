@@ -3,7 +3,7 @@
 
 import Combine
 import Foundation
-import Introspect
+import SwiftUIIntrospect
 import SwiftUI
 import UIKit
 
@@ -26,14 +26,18 @@ struct ScrollNotificationInject: ViewModifier {
     @ObservedObject var delegate = Delegate()
     func body(content: Content) -> some View {
         content
-            .introspectTableView { list in
+            .introspect(.list, on: .iOS(.v13, .v14, .v15)) { list in
+                list.delegate = delegate
+                list.allowsSelection = showSelection
+            }
+            .introspect(.list, on: .iOS(.v16, .v17)) { list in
                 list.delegate = delegate
                 list.allowsSelection = showSelection
             }
     }
 }
 
-class Delegate: NSObject, UITableViewDelegate, UIScrollViewDelegate, ObservableObject {
+class Delegate: NSObject, UITableViewDelegate, UICollectionViewDelegate, UIScrollViewDelegate, ObservableObject {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: .swipeCellReset, object: nil)
     }
@@ -47,6 +51,10 @@ class Delegate: NSObject, UITableViewDelegate, UIScrollViewDelegate, ObservableO
     {
         return UITableViewCell.EditingStyle.none
     }
+
+    func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
+        false
+    }
 }
 
 //MARK: dismissList
@@ -56,13 +64,15 @@ struct ScrollNotificationWithoutInject: ViewModifier {
     let timeInterval: Double
     @State var timer = Timer.publish(every: 0.5, on: .main, in: .common)
     @State var cancellable: Set<AnyCancellable> = []
-    @State var listView = UITableView()
+    @State var listView: VisibleCellables?
     @State var hashValue: Int? = nil
 
     func body(content: Content) -> some View {
         content
-            .introspectTableView { listView in
-
+            .introspect(.list, on: .iOS(.v13, .v14, .v15)) { listView in
+                self.listView = listView
+            }
+            .introspect(.list, on: .iOS(.v16, .v17)) { listView in
                 self.listView = listView
             }
             .onAppear {
@@ -75,11 +85,11 @@ struct ScrollNotificationWithoutInject: ViewModifier {
             }
             .onReceive(timer) { _ in
                 if hashValue == nil {
-                    hashValue = listView.visibleCells.first.hashValue
+                    hashValue = listView?.visibleViews.first.hashValue
                 }
-                if hashValue != listView.visibleCells.first.hashValue {
+                if hashValue != listView?.visibleViews.first.hashValue {
                     NotificationCenter.default.post(name: .swipeCellReset, object: nil)
-                    hashValue = listView.visibleCells.first.hashValue
+                    hashValue = listView?.visibleViews.first.hashValue
                 }
             }
     }
@@ -100,7 +110,7 @@ struct ScrollNotificationForScrollViewInject: ViewModifier {
     @State var offset: CGPoint? = nil
     func body(content: Content) -> some View {
         content
-            .introspectScrollView { scrollView in
+            .introspect(.scrollView, on: .iOS(.v13, .v14, .v15, .v16, .v17)) { scrollView in
                 self.scrollView = scrollView
             }
             .onAppear {
@@ -233,4 +243,17 @@ extension View {
     }
 }
 
+protocol VisibleCellables {
+    var visibleViews: [UIView] { get }
+}
 
+extension UITableView: VisibleCellables {
+    var visibleViews: [UIView] {
+        visibleCells
+    }
+}
+extension UICollectionView: VisibleCellables {
+    var visibleViews: [UIView] {
+        visibleCells
+    }
+}

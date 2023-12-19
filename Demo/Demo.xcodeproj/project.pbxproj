@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		692712192B31A11900623049 /* SwipeCell in Frameworks */ = {isa = PBXBuildFile; productRef = 692712182B31A11900623049 /* SwipeCell */; };
 		7672254D24DCBF010004593E /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7672254C24DCBF010004593E /* DemoApp.swift */; };
 		7672254F24DCBF010004593E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7672254E24DCBF010004593E /* ContentView.swift */; };
 		7672255124DCBF020004593E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7672255024DCBF020004593E /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7672256024DCBF9B0004593E /* SwipeCell in Frameworks */,
+				692712192B31A11900623049 /* SwipeCell in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +104,7 @@
 			name = Demo;
 			packageProductDependencies = (
 				7672255F24DCBF9B0004593E /* SwipeCell */,
+				692712182B31A11900623049 /* SwipeCell */,
 			);
 			productName = Demo;
 			productReference = 7672254924DCBF010004593E /* Demo.app */;
@@ -130,6 +133,9 @@
 				Base,
 			);
 			mainGroup = 7672254024DCBF010004593E;
+			packageReferences = (
+				692712172B31A11900623049 /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 7672254A24DCBF010004593E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -348,7 +354,18 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		692712172B31A11900623049 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		692712182B31A11900623049 /* SwipeCell */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwipeCell;
+		};
 		7672255F24DCBF9B0004593E /* SwipeCell */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwipeCell;
